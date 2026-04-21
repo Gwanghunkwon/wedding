@@ -1,0 +1,40 @@
+{
+  "updatedAt": "2026-04-21",
+  "status": "mvp-logged",
+  "frontend": {
+    "framework": "nextjs-app-router",
+    "pages": [
+      "/",
+      "/project",
+      "/wedding",
+      "/interior",
+      "/b2b",
+      "/admin"
+    ]
+  },
+  "apis": [
+    "/api/compare",
+    "/api/validate-estimate",
+    "/api/leads",
+    "/api/events",
+    "/api/admin-summary"
+  ],
+  "pipeline": {
+    "ingest": "pipeline/public_data_ingest.py",
+    "normalize": "pipeline/normalize.py",
+    "policy": "pipeline/source_policy.py",
+    "quality": "pipeline/quality_report.py",
+    "run": "pipeline/run_pipeline.py"
+  },
+  "knownGaps": [
+    "lead/event 인메모리 저장",
+    "인증/권한 미구현",
+    "admin-summary 일부 하드코딩"
+  ],
+  "nextRecommended": [
+    "PostgreSQL 영속화",
+    "인증/권한 적용"
+  ],
+  "lastSessionAt": "2026-04-21 21:14:38",
+  "lastSummary": "자동 기록 스크립트 연결"
+}
