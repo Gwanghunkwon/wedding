@@ -13,9 +13,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="ko">
       <body>
         <header className="container" style={{ paddingBottom: 8 }}>
-          <div className="card" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div className="topbar">
             <strong>Cost Compass</strong>
-            <nav style={{ display: "flex", gap: 14 }}>
+            <nav className="nav">
               <Link href="/">홈</Link>
               <Link href="/project">내 프로젝트</Link>
               <Link href="/wedding">웨딩 비교</Link>

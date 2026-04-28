@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { trackEvent } from "@/lib/analytics-client";
 
@@ -59,66 +60,84 @@ export default function B2BPage() {
   };
 
   return (
-    <section className="grid">
-      <article className="grid grid-3">
-        <div className="card">
-          <div className="muted">월간 리드</div>
-          <strong>{metrics.total}건</strong>
+    <section className="gpt-frame">
+      <aside className="gpt-sidebar">
+        <div className="gpt-logo">Cost Compass</div>
+        <button className="gpt-new-chat" type="button">
+          + 새 응답 작성
+        </button>
+        <div className="gpt-history">
+          <div className="gpt-history-item">신규 웨딩 리드 1건</div>
+          <div className="gpt-history-item">인테리어 문의 응답 완료</div>
         </div>
-        <div className="card">
-          <div className="muted">응답 완료</div>
-          <strong>{metrics.answered}건</strong>
+        <div className="gpt-history">
+          <Link href="/">홈으로</Link>
+          <Link href="/admin">운영 콘솔</Link>
         </div>
-        <div className="card">
-          <div className="muted">응답률</div>
-          <strong>{metrics.responseRate}%</strong>
-        </div>
-      </article>
+      </aside>
 
-      <article className="card">
-        <h1 style={{ marginTop: 0 }}>업체 리드 수신함</h1>
-        <p className="muted">문의를 확인하고 템플릿 답변으로 빠르게 응답하세요.</p>
-        <label>
-          <div className="muted">응답 템플릿</div>
-          <textarea className="textarea" rows={3} value={template} onChange={(e) => setTemplate(e.target.value)} />
-        </label>
-      </article>
-
-      <article className="card">
-        <div className="grid">
-          {leads.map((lead) => (
-            <div key={lead.id} className="card">
-              <strong>
-                {lead.customer} / {lead.category}
-              </strong>
-              <p className="muted">{lead.message}</p>
-              <p className="muted">희망 예산: {lead.budget.toLocaleString("ko-KR")}원</p>
-              <p className="muted">상태: {lead.status}</p>
-              <p className="muted">리드 품질 점수: {getLeadQuality(lead)}점</p>
-              {lead.status === "신규" && (
-                <button className="button" onClick={() => markAnswered(lead.id)}>
-                  템플릿으로 응답 처리
-                </button>
-              )}
+      <main className="gpt-main">
+        <div className="gpt-top">업체 콘솔</div>
+        <div className="gpt-thread">
+          <div className="gpt-msg">
+            <strong>성과 요약</strong>
+            <div className="grid grid-3" style={{ marginTop: 10 }}>
+              <div className="card">
+                <div className="muted">월간 리드</div>
+                <strong>{metrics.total}건</strong>
+              </div>
+              <div className="card">
+                <div className="muted">응답 완료</div>
+                <strong>{metrics.answered}건</strong>
+              </div>
+              <div className="card">
+                <div className="muted">응답률</div>
+                <strong>{metrics.responseRate}%</strong>
+              </div>
             </div>
-          ))}
-        </div>
-      </article>
+          </div>
 
-      <article className="grid grid-2">
-        <div className="card">
-          <h2 style={{ marginTop: 0 }}>과금 모델 (2단계)</h2>
-          <p className="muted">CPL: 유효 리드 1건당 18,000원</p>
-          <p className="muted">월 구독 Basic: 19만원 / Pro: 49만원</p>
+          <div className="gpt-msg">
+            <strong>리드 수신함</strong>
+            <div className="grid" style={{ marginTop: 10 }}>
+              {leads.map((lead) => (
+                <div key={lead.id} className="card">
+                  <strong>
+                    {lead.customer} / {lead.category}
+                  </strong>
+                  <p className="muted">{lead.message}</p>
+                  <p className="muted">희망 예산: {lead.budget.toLocaleString("ko-KR")}원</p>
+                  <p className="muted">상태: {lead.status}</p>
+                  <p className="muted">리드 품질 점수: {getLeadQuality(lead)}점</p>
+                  {lead.status === "신규" && (
+                    <button className="button" onClick={() => markAnswered(lead.id)}>
+                      템플릿으로 응답 처리
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="gpt-msg">
+            <strong>수익화 모델</strong>
+            <p className="muted">CPL: 유효 리드 1건당 18,000원</p>
+            <p className="muted">월 구독 Basic: 19만원 / Pro: 49만원</p>
+          </div>
         </div>
-        <div className="card">
-          <h2 style={{ marginTop: 0 }}>Pro 플랜 혜택</h2>
-          <p className="muted">우선 노출, 리드 품질 점수, 월간 성과 리포트</p>
-          <button className="button" type="button">
-            플랜 업그레이드 문의
-          </button>
+
+        <div className="gpt-composer-wrap">
+          <div className="gpt-composer">
+            <label>
+              <div className="muted">응답 템플릿</div>
+              <textarea className="textarea" rows={3} value={template} onChange={(e) => setTemplate(e.target.value)} />
+            </label>
+            <button className="button" type="button">
+              Pro 플랜 업그레이드 문의
+            </button>
+          </div>
         </div>
-      </article>
+      </main>
     </section>
   );
 }

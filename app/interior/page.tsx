@@ -1,6 +1,7 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { compareCosts, compareInteriorCosts, estimateGap } from "@/lib/pricing";
 import { formatKrw } from "@/lib/format";
 import { trackEvent } from "@/lib/analytics-client";
@@ -23,10 +24,6 @@ export default function InteriorPage() {
   useEffect(() => {
     void trackEvent({ name: "compare_result_viewed", category: "interior" });
   }, [region, areaPy]);
-
-  const onSubmit = (event: FormEvent) => {
-    event.preventDefault();
-  };
 
   const validateEstimate = async () => {
     setValidationResult([]);
@@ -78,138 +75,130 @@ export default function InteriorPage() {
   };
 
   return (
-    <section className="grid">
-      <article className="card">
-        <h1 style={{ marginTop: 0 }}>인테리어 비용 비교</h1>
-        <p className="muted">지역/평형 기준으로 표준 견적과 실제 사례를 비교합니다.</p>
-        <form className="grid grid-3" onSubmit={onSubmit}>
-          <label>
-            <div className="muted">지역</div>
-            <select className="select" value={region} onChange={(e) => setRegion(e.target.value)}>
-              <option>수도권</option>
-              <option>광역시</option>
-              <option>지방</option>
-            </select>
-          </label>
-          <label>
-            <div className="muted">평형</div>
-            <input className="input" type="number" value={areaPy} onChange={(e) => setAreaPy(Number(e.target.value))} />
-          </label>
-          <label>
-            <div className="muted">예산</div>
-            <input className="input" type="number" value={budget} onChange={(e) => setBudget(Number(e.target.value))} />
-          </label>
-        </form>
-      </article>
+    <section className="gpt-frame">
+      <aside className="gpt-sidebar">
+        <div className="gpt-logo">Cost Compass</div>
+        <button className="gpt-new-chat" type="button">
+          + 새 인테리어 분석
+        </button>
+        <div className="gpt-history">
+          <div className="gpt-history-item">32평 모던 리모델링 견적</div>
+          <div className="gpt-history-item">부분 공사 vs 전체 공사 비교</div>
+          <div className="gpt-history-item">옵션별 단가 영향 분석</div>
+        </div>
+        <div className="gpt-history">
+          <Link href="/">홈으로</Link>
+          <Link href="/wedding">웨딩 비교</Link>
+        </div>
+      </aside>
 
-      <article className="grid grid-3">
-        <div className="card">
-          <div className="muted">예상 평균 총비용</div>
-          <strong>{formatKrw(result.averageTotal)}</strong>
-        </div>
-        <div className="card">
-          <div className="muted">비용 범위</div>
-          <strong>
-            {formatKrw(result.totalRange.min)} ~ {formatKrw(result.totalRange.max)}
-          </strong>
-        </div>
-        <div className="card">
-          <div className="muted">예산 대비</div>
-          <strong>{gap >= 0 ? `${formatKrw(gap)} 여유` : `${formatKrw(Math.abs(gap))} 부족`}</strong>
-        </div>
-      </article>
-
-      <article className="card">
-        <h2 style={{ marginTop: 0 }}>항목별 평균 비용</h2>
-        <div className="grid grid-2">
-          <div className="card">평당 공사비: {formatKrw(result.averageByItem.unitCostPy)}</div>
-          <div className="card">옵션: {formatKrw(result.averageByItem.optionCost)}</div>
-        </div>
-      </article>
-
-      <article className="card">
-        <h2 style={{ marginTop: 0 }}>실제 사례 ({result.count}건)</h2>
-        <div className="grid">
-          {result.cases.map((item) => (
-            <div key={item.id} className="card">
-              <strong>
-                {item.region} / {item.style} / {item.areaPy}평 / {item.scope}
-              </strong>
-              <p className="muted" style={{ marginBottom: 4 }}>
-                총액 {formatKrw(item.totalCost)} | 출처: {item.source}
-              </p>
+      <main className="gpt-main">
+        <div className="gpt-top">인테리어 비용 비교</div>
+        <div className="gpt-thread">
+          <div className="gpt-msg">
+            <strong>핵심 요약</strong>
+            <div className="grid grid-3" style={{ marginTop: 10 }}>
+              <div className="card">
+                <div className="muted">예상 평균 총비용</div>
+                <strong>{formatKrw(result.averageTotal)}</strong>
+              </div>
+              <div className="card">
+                <div className="muted">비용 범위</div>
+                <strong>
+                  {formatKrw(result.totalRange.min)} ~ {formatKrw(result.totalRange.max)}
+                </strong>
+              </div>
+              <div className="card">
+                <div className="muted">예산 대비</div>
+                <strong>{gap >= 0 ? `${formatKrw(gap)} 여유` : `${formatKrw(Math.abs(gap))} 부족`}</strong>
+              </div>
             </div>
-          ))}
-        </div>
-      </article>
+          </div>
 
-      <article className="grid grid-2">
-        <div className="card">
-          <h2 style={{ marginTop: 0 }}>근거 데이터</h2>
-          <p className="muted">출처: 공개 정가표/실지불 사례/공개 후기</p>
-          <p className="muted">표본수: {result.count}건</p>
-          <p className="muted">갱신일: 2026-04-21</p>
-        </div>
-        <div className="card">
-          <h2 style={{ marginTop: 0 }}>다음 질문</h2>
-          <p className="muted">철거/목공/조명 등 옵션 범위를 좁혀 추가 견적 시뮬레이션을 진행할까요?</p>
-        </div>
-      </article>
+          <div className="gpt-msg">
+            <strong>항목별 평균 비용</strong>
+            <div className="grid grid-2" style={{ marginTop: 10 }}>
+              <div className="card">평당 공사비: {formatKrw(result.averageByItem.unitCostPy)}</div>
+              <div className="card">옵션: {formatKrw(result.averageByItem.optionCost)}</div>
+            </div>
+          </div>
 
-      <article className="grid grid-2">
-        <div className="card">
-          <h2 style={{ marginTop: 0 }}>견적 검증</h2>
-          <p className="muted">공사 견적 텍스트를 넣으면 누락/주의 항목을 분석합니다.</p>
-          <textarea
-            className="textarea"
-            rows={6}
-            value={estimateText}
-            onChange={(e) => setEstimateText(e.target.value)}
-            placeholder="예: 철거 1,200만원, 목공 3,100만원, 조명 별도..."
-          />
-          <div style={{ marginTop: 8 }}>
-            <input
-              className="input"
-              type="file"
-              accept=".txt,image/*"
-              onChange={(e) => {
-                void importEstimateFile(e.target.files?.[0] ?? null);
-              }}
+          <div className="gpt-msg">
+            <strong>실제 사례 ({result.count}건)</strong>
+            <div className="grid" style={{ marginTop: 10 }}>
+              {result.cases.map((item) => (
+                <div key={item.id} className="card">
+                  <strong>
+                    {item.region} / {item.style} / {item.areaPy}평 / {item.scope}
+                  </strong>
+                  <p className="muted" style={{ marginBottom: 4 }}>
+                    총액 {formatKrw(item.totalCost)} | 출처: {item.source}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="gpt-msg">
+            <strong>근거 데이터</strong>
+            <p className="muted">출처: 공개 정가표/실지불 사례/공개 후기</p>
+            <p className="muted">표본수: {result.count}건</p>
+            <p className="muted">갱신일: 2026-04-21</p>
+          </div>
+        </div>
+
+        <div className="gpt-composer-wrap">
+          <div className="gpt-composer">
+            <div className="gpt-composer-row">
+              <select className="select" value={region} onChange={(e) => setRegion(e.target.value)}>
+                <option>수도권</option>
+                <option>광역시</option>
+                <option>지방</option>
+              </select>
+              <input className="input" type="number" value={areaPy} onChange={(e) => setAreaPy(Number(e.target.value))} placeholder="평형" />
+            </div>
+            <div className="gpt-composer-row">
+              <input className="input" type="number" value={budget} onChange={(e) => setBudget(Number(e.target.value))} placeholder="예산" />
+              <button className="button" type="button" onClick={sendLead}>
+                업체 문의 보내기
+              </button>
+            </div>
+            <textarea
+              className="textarea"
+              rows={4}
+              value={estimateText}
+              onChange={(e) => setEstimateText(e.target.value)}
+              placeholder="공사 견적 텍스트를 입력하거나 이미지/.txt 파일을 업로드하세요."
             />
+            <div className="gpt-composer-row">
+              <input
+                className="input"
+                type="file"
+                accept=".txt,image/*"
+                onChange={(e) => {
+                  void importEstimateFile(e.target.files?.[0] ?? null);
+                }}
+              />
+              <button className="button" type="button" onClick={validateEstimate}>
+                견적 검증 실행
+              </button>
+            </div>
+            {ocrStatus && <p className="muted">{ocrStatus}</p>}
+            {!!validationResult.length && (
+              <ul>
+                {validationResult.map((warning) => (
+                  <li key={warning} className="muted">
+                    {warning}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {validationMeta && <p className="muted">{validationMeta}</p>}
+            {leadStatus && <p className="muted">{leadStatus}</p>}
           </div>
-          {ocrStatus && <p className="muted">{ocrStatus}</p>}
-          <div style={{ marginTop: 8 }}>
-            <button className="button" type="button" onClick={validateEstimate}>
-              검증 실행
-            </button>
-          </div>
-          <ul>
-            {validationResult.map((warning) => (
-              <li key={warning} className="muted">
-                {warning}
-              </li>
-            ))}
-          </ul>
-          {validationMeta && <p className="muted">{validationMeta}</p>}
+          <div className="gpt-note">공사 범위를 명확히 입력할수록 비교 정확도가 올라갑니다.</div>
         </div>
-        <div className="card">
-          <h2 style={{ marginTop: 0 }}>업체 문의</h2>
-          <p className="muted">비교 결과를 기반으로 인테리어 업체에 상담을 요청합니다.</p>
-          <textarea
-            className="textarea"
-            rows={4}
-            value={leadMessage}
-            onChange={(e) => setLeadMessage(e.target.value)}
-            placeholder="시공 범위, 입주 일정, 선호 자재를 적어주세요."
-          />
-          <div style={{ marginTop: 8 }}>
-            <button className="button" type="button" onClick={sendLead}>
-              문의 보내기
-            </button>
-          </div>
-          {leadStatus && <p className="muted">{leadStatus}</p>}
-        </div>
-      </article>
+      </main>
     </section>
   );
 }
