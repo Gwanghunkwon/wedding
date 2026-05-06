@@ -41,12 +41,6 @@ export default function LoginPage() {
               <button className="button" type="button" onClick={() => signIn("google", { callbackUrl: getCallbackUrl() })}>
                 구글로 로그인
               </button>
-              <button className="button" type="button" onClick={() => signIn("kakao", { callbackUrl: getCallbackUrl() })}>
-                카카오로 로그인
-              </button>
-              <button className="button" type="button" onClick={() => signIn("naver", { callbackUrl: getCallbackUrl() })}>
-                네이버로 로그인
-              </button>
             </div>
           </div>
           <div className="gpt-note">로그인 실패 시 OAuth Redirect URI와 Render ENV 설정을 확인하세요.</div>
